@@ -38,6 +38,7 @@ func main() {
 	stopWork := flag.Bool("wstop", false, "Stop Work flag")
 	manualCalc := flag.Bool("manual", false, "Run dialog for calculate time")
 	howMany := flag.Bool("howMany", false, "Check time")
+	breakDuration := flag.Bool("bd", false, "Lunch break duration")
 
 	flag.Parse()
 
@@ -59,6 +60,8 @@ func main() {
 		timeCalc()
 	} else if *howMany == true {
 		howManyF()
+	} else if *breakDuration == true {
+		breackDur()
 	}
 }
 
@@ -329,4 +332,16 @@ func writeFile(body []byte) {
 		f.Close()
 		return
 	}
+}
+
+func breackDur() {
+	workFile := make(map[string]workStruct)
+	workFile = readFile()
+	timeNow := time.Now()
+	date := fmt.Sprintf("%d-%d-%d", timeNow.Year(), timeNow.Month(), timeNow.Day())
+
+	breakDur := workFile[date].BreakEnd - workFile[date].BreakStart
+
+	durString := fmt.Sprintf("%d min", (breakDur / 60))
+	notif("Breack duration:", durString)
 }
